@@ -9,8 +9,11 @@ some changes by philippe's TAs in course OS, 201809
 it s absurdly self-explanatory:
 
 settings are done in ... settings.conf
+
 createGroups creates Groups
+
 deleteGroups ... well, you guess :) ... it deletes all groups according to settings.
+
 
 A feature worth noting:
 with the groups already existing,
