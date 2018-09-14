@@ -1,5 +1,9 @@
 #!/bin/bash
 #idea: remove all users (incl their home dirs) automatically created
+# SETTINGS to be sourced from file settings.conf ###########################
+. settings.conf
+### has to contain numberOfGroups, repoURL,  homePrefix, namePrefix
+###########################################################################
 if [ -e settings.conf ]
 then
     echo "found settings"
