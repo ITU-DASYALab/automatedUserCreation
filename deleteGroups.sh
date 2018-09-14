@@ -1,11 +1,13 @@
 #!/bin/bash
 #idea: remove all users (incl their home dirs) automatically created
-# SETTINGS ################################################################
-currentGroup=1
-numberOfGroups=3
-homePrefix="/home/"
-namePrefix="group"
-###########################################################################
+if [ -e settings.conf ]
+then
+    echo "found settings"
+else
+    echo "could not find settings"
+    exit 0
+fi
+
 
 while [ "$currentGroup" -le "$numberOfGroups" ]
 do
