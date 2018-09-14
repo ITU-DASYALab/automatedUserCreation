@@ -1,5 +1,6 @@
 # groupTest
-just to test automatic setup of groups for courses etc
+
+automatic setup of users (rather than groups) for courses etc
 
 sebastian 201808
 
