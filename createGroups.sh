@@ -1,7 +1,7 @@
 #!/bin/bash
 #idea: for x groups/users, fetch pub ssh keys automatically from e.g. a github repo
 # to be used at semester start
-# SETTINGS to be surced from file settings.conf ###########################
+# SETTINGS to be sourced from file settings.conf ###########################
 . settings.conf
 ### has to contain numberOfGroups, repoURL,  homePrefix, namePrefix
 ###########################################################################
