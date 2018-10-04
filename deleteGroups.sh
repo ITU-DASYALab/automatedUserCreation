@@ -1,6 +1,6 @@
 #!/bin/bash
 #idea: remove all users (incl their home dirs) automatically created
-# SETTINGS to be sourced from file settings.conf ###########################
+# SETTINGS to be surced from file settings.conf ###########################
 . settings.conf
 ### has to contain numberOfGroups, repoURL,  homePrefix, namePrefix
 ###########################################################################
@@ -12,11 +12,11 @@ else
     exit 0
 fi
 
-
+currentGroup=1
 while [ "$currentGroup" -le "$numberOfGroups" ]
 do
  echo "about to delete $currentGroup "
-myCurrentName="group""$currentGroup"
+myCurrentName="$namePrefix""$currentGroup"
 # add user
 userdel -r $myCurrentName
 echo " deleted group $currentGroup "
