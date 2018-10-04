@@ -1,7 +1,7 @@
 #!/bin/bash
 #idea: for x groups/users, fetch pub ssh keys automatically from e.g. a github repo
 # to be used at semester start
-# SETTINGS to be sourced from file settings.conf ###########################
+# SETTINGS to be surced from file settings.conf ###########################
 . settings.conf
 ### has to contain numberOfGroups, repoURL,  homePrefix, namePrefix
 ###########################################################################
@@ -23,7 +23,7 @@ while [ "$currentGroup" -le "$numberOfGroups" ]
 
 do
     echo "##################### CREATE GROUP $currentGroup"
-myHomeDir="$homePrefix""group""$currentGroup"
+myHomeDir="$homePrefix""$namePrefix""$currentGroup"
 
 ############ create user, unless i already have that user
 if [ -d $myHomeDir ]
@@ -46,16 +46,16 @@ wget $myCurrentFile
 if [ -e authorized_keys ]
 then
     echo "ok, found key file and will transfer"
-    myTarget="$homePrefix""group""$currentGroup""/.ssh"
+    myTarget="$homePrefix""$namePrefix""$currentGroup""/.ssh"
 
-	if [ -d $myTarget ]
-	then
-    		echo "directory exists, nothing to do"
-		else
-    			echo "creating directory - "
-			echo $myTarget
-    		    mkdir $myTarget
-	fi
+        if [ -d $myTarget ]
+        then
+                echo "directory exists, nothing to do"
+                else
+                        echo "creating directory - "
+                        echo $myTarget
+                    mkdir $myTarget
+        fi
 
     echo "and copying to $myTarget "
     cp authorized_keys $myTarget
@@ -63,7 +63,8 @@ else
     echo "could not find key file - ignoring this for now"
 fi
 
-
+echo "chowning the home dir"
+chown -R $myCurrentName:$myCurrentName $myHomeDir
 
 rm authorized_keys
  let "currentGroup += 1"
@@ -71,4 +72,3 @@ rm authorized_keys
 done                     
 echo
 exit 0
-
