@@ -6,6 +6,29 @@ then
     then
         echo "Reading settings"
         . $1
+        if [[ $addToGroup == "y" ]]
+        then
+            addToGroup="y"
+            echo "Specify group:"
+            read groupForUser
+            echo "groupForUser: $groupForUser"
+            groupadd -r $groupForUser
+        fi
+
+        if [ $divideUsersIntoGroups == "y" ]
+        then
+            if [[ $((numberOfUsers % numberOfGroups)) != 0 ]]
+            then
+                echo "Number of users must be divisible with number of groups!"
+                exit 0
+            fi
+            for ((i=1;i<=numberOfGroups;i++))
+            do
+                groupadd -r $groupPrefix$i
+            done
+            usersPerGroup=$((numberOfUsers/numberOfGroups))
+            g=1
+        fi
     else
         echo "Could not find settings file!"
         exit 0
@@ -21,6 +44,19 @@ else
         echo "Specify username:"
         read username
         echo "username: $username"
+
+        echo "Add user to specific group? [y/n]:"
+        read addToGroup
+
+        if [[ -z $addToGroup || $addToGroup == "y" ]]
+        then
+            addToGroup="y"
+            echo "Specify group:"
+            read groupForUser
+            echo "groupForUser: $groupForUser"
+
+            groupadd -r $groupForUser
+        fi
     else
         echo "Specify user prefix [user]:"
         read userPrefix
@@ -30,9 +66,44 @@ else
             userPrefix="user"
         fi
         echo "userPrefix: $userPrefix"
+
+        echo "Add users to groups? [y/n]:"
+        read divideUsersIntoGroups
+
+        if [[ -z $divideUsersIntoGroups || $divideUsersIntoGroups == "y" ]]
+        then
+            divideUsersIntoGroups="y"
+            echo "Specify group prefix [group]:"
+            read groupPrefix
+
+            if [ -z $groupPrefix ]
+            then
+                groupPrefix="group"
+            fi
+            echo "groupPrefix: $groupPrefix"
+
+            echo "Specify number of groups:"
+            read numberOfGroups
+            echo "numberOfGroups: $numberOfGroups"
+
+            if [[ $((numberOfUsers % numberOfGroups)) != 0 ]]
+            then
+                echo "Number of users must be divisible with number of groups!"
+                exit 0
+            fi
+
+            for ((i=1;i<=numberOfGroups;i++))
+            do
+                groupadd -r $groupPrefix$i
+            done
+
+            usersPerGroup=$((numberOfUsers/numberOfGroups))
+            echo "Users per group: $usersPerGroup"
+            g=1
+        fi
     fi
 
-    echo "Specify home directory location [/home/]:"
+    echo "Specify home directory location (Note: username will be added automatically) [/home/]:"
     read homePrefix
 
     if [ -z $homePrefix ]
@@ -149,9 +220,19 @@ u=1
 echo "Creating users..."
 while [ "$u" -le "$numberOfUsers" ]
 do
-    if [ $numberOfUsers -ne 1 ]
+    if [ $numberOfUsers -gt 1 ]
     then
-        username="$userPrefix$u"
+        if [ $divideUsersIntoGroups == "y" ]
+        then
+            i=$((u % usersPerGroup))
+            if [ $i -eq 0 ]
+            then
+                i=$usersPerGroup
+            fi
+            username="$userPrefix$g$i"
+        else
+            username="$userPrefix$u"
+        fi
     fi
 
     echo "Creating User $username..."
@@ -161,8 +242,19 @@ do
     then
         echo "User already exists"
     else
-        # add user
-        useradd -m -d $homeDir $username
+
+        if [ $numberOfUsers -eq 1 ]
+        then
+            if [ $addToGroup == "y" ]
+            then
+                useradd -m -d $homeDir -G $groupForUser $username
+            fi
+        elif [ $divideUsersIntoGroups == "y" ]
+        then
+            useradd -m -d $homeDir -G $groupPrefix$g $username
+        else
+            useradd -m -d $homeDir $username
+        fi
 
         if [ -n "$bashrcCommands" ]
         then
@@ -217,6 +309,17 @@ do
 
     echo "Setting ownership of user directories"
     chown -R $username:$username $homeDir
+    if [ $numberOfUsers -gt 1 ]
+    then
+        if [ $divideUsersIntoGroups == "y" ]
+        then
+            if [[ $((u % usersPerGroup)) == 0 && $g != $numberOfGroups ]]
+            then
+                let "g += 1"
+            fi
+        fi
+    fi
+
     let "u += 1"
 done
 
