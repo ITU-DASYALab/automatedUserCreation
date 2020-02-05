@@ -41,7 +41,7 @@ else
     fi
     echo "homePrefix: $homePrefix"
 
-    echo "Add authized_keys file for ssh? [y/n]:"
+    echo "Add authorized_keys file for ssh? [y/n]:"
     read sshAuth
 
     if [ -z $sshAuth ]
