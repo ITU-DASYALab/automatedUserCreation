@@ -1,5 +1,22 @@
 # groupTest
 
+Note:
+
+last and best version of this is
+
+``` 
+ 	createUsers.sh
+  
+  general_settings.conf
+  
+  (Omar 202002) 
+  ``` 
+
+
+Look at older versions at your own peril!
+
+
+
 automatic setup of users (rather than groups) for courses etc
 
 sebastian 201808
