@@ -162,7 +162,7 @@ do
         echo "User already exists"
     else
         # add user
-        useradd -m $username
+        useradd -m -d $homeDir $username
 
         if [ -n "$bashrcCommands" ]
         then
