@@ -5,9 +5,10 @@ Note:
 last and best version of this is
 
 ``` 
- 	createUsers.sh
-  
-  general_settings.conf
+createUsers.sh
+
+with settings in
+general_settings.conf
   
   (Omar 202002) 
   ``` 
